@@ -1,7 +1,7 @@
 'use strict';
 
 const format = d3.format(",d");
-const width = 632;
+const width = 932;
 const radius = width / 6;
 
 const arc = d3.arc()
@@ -36,11 +36,17 @@ function labelTransform(d) {
 
 var data_url = "https://gist.githubusercontent.com/mbostock/1093025/raw/b40b9fc5b53b40836ead8aa4b4a17d948b491126/flare.json";
 
-const {require} = new observablehq.Library;
-
-require()('@observablehq/flare').then(data => {
-//d3.json(data_url).then(data => { // cannot work
-//d3.json("flare.json").then(data => { // cannot work!
+/**
+ * Working four methods to load data:
+ * (1) Inline data in json format (JS plain objects);
+ * (2) From an https URL, which works only afer allowing cross origin requests
+ *     on Firefox if the data URL is not the same as your app server;
+ * (3) From a local file;
+ * (4) Calling require()('@observablehq/flare') (observable-specific). In fact,
+ *     The same as (2).
+ */
+d3.json(data_url).then((data, error) => { // (2)
+//d3.json("flare.json").then((data, error) => { // (3)
     console.log(data);
     const root = partition(data);
     const color = d3.scaleOrdinal()
