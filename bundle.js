@@ -22,14 +22,15 @@
                  (root);
     };
 
-    // Uncaught ReferenceError: require is not defined without this on line 28
-    const {require} = new observablehq.Library; // only to load data via a URL
+    // Uncaught ReferenceError: require is not defined without this
+    const {require} = new observablehq.Library;
 
-//    var data_url = "https://raw.githubusercontent.com/d3/d3-hierarchy/v1.1.8/test/data/flare.json";
-    
-   require()('@observablehq/flare').then(data => {
-//    require()(data_url).then(data => { // cannot work!
+    //var dataURL = "https://raw.githubusercontent.com/d3/d3-hierarchy/v1.1.8/test/data/flare.json";
+    // Overcoming difficulties with JSON data loading (or another mistake)
+    //https://talk.observablehq.com/t/overcoming-difficulties-with-json-data-loading-or-another-mistake/688
+    require()('@observablehq/flare').then((data, error) => {
         console.log(data);
+      
         const root = partition(data);
         const color = d3.scaleOrdinal()
                 .range(d3.quantize(d3.interpolateRainbow,
@@ -50,8 +51,7 @@
                 .data(root.descendants().slice(1))
                 .join("path")
                 .attr("fill", d => {
-                    while (d.depth > 1)
-                        { d = d.parent; }
+                    while (d.depth > 1) { d = d.parent; }
                     return color(d.data.name);
                 })
                 .attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
