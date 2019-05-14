@@ -34,10 +34,8 @@ function labelTransform(d) {
     return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
 }
 
-var data_url = "https://gist.githubusercontent.com/mbostock/1093025/raw/b40b9fc5b53b40836ead8aa4b4a17d948b491126/flare.json";
-
 /**
- * Working four methods to load data:
+ * Four working methods to load data:
  * (1) Inline data in json format (JS plain objects);
  * (2) From an https URL, which works only afer allowing cross origin requests
  *     on Firefox if the data URL is not the same as your app server;
@@ -45,8 +43,14 @@ var data_url = "https://gist.githubusercontent.com/mbostock/1093025/raw/b40b9fc5
  * (4) Calling require()('@observablehq/flare') (observable-specific). In fact,
  *     The same as (2).
  */
-d3.json(data_url).then((data, error) => { // (2)
-//d3.json("flare.json").then((data, error) => { // (3)
+
+//var data_url = "https://gist.githubusercontent.com/mbostock/1093025/raw/b40b9fc5b53b40836ead8aa4b4a17d948b491126/flare.json"; // network error!
+var dataURL = "https://gist.githubusercontent.com/mbostock/4348373/raw/85f18ac90409caa5529b32156aa6e71cf985263f/flare.json";
+
+//const {require} = new observablehq.Library;
+//require()('@observablehq/flare').then((data, error) => { // works!
+d3.json(dataURL).then((data, error) => { // works behind proxy!
+//d3.json("flare.json").then((data, error) => { // works!
     console.log(data);
     const root = partition(data);
     const color = d3.scaleOrdinal()
@@ -133,5 +137,5 @@ d3.json(data_url).then((data, error) => { // (2)
         }).transition(t)
           .attr("fill-opacity", d => +labelVisible(d.target))
           .attrTween("transform", d => () => labelTransform(d.current));
-  }
+    }
 });
